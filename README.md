@@ -7,6 +7,7 @@ This project is a kind of sequel to [MLP-Digits-Recognition](), an implementatio
 
 ### Technical description
 - The [`neural-network`](libs/neural-network/src/lib.rs) library contains an implementation of a simple, non-optimized FFNN (Feed-Forward Neural Network).
+- The [`genetic-algorithm`](libs/genetic-algorithm/src/lib.rs) library implements a genetic algorithm, which selects, crossovers, and mutates individuals.
 
 
 ## Running and debugging
