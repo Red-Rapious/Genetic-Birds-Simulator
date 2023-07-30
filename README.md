@@ -9,6 +9,8 @@ This project is a kind of sequel to [MLP-Digits-Recognition](), an implementatio
 - The [`neural-network`](libs/neural-network/src/lib.rs) library contains an implementation of a simple, non-optimized FFNN (Feed-Forward Neural Network).
 - The [`genetic-algorithm`](libs/genetic-algorithm/src/lib.rs) library implements a genetic algorithm, which selects, crossovers, and mutates individuals.
 
+The Genetic Algorithm is build to work with multiple selection, crossover, and mutation algorithms. The ones currently implemented are [Roulette Wheel Selection](https://en.wikipedia.org/wiki/Fitness_proportionate_selection), [Uniform Crossover](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)), and [Gaussian Mutation](https://en.wikipedia.org/wiki/Gaussian_adaptation).
+
 
 ## Running and debugging
 This project's workspace is structured in `libs`. There is no main app available yet. Nevertheless, tests can be executed by running:
