@@ -2,17 +2,20 @@ use rand::Rng;
 
 pub mod test;
 
+/// The structure of a neural network, capable of propagating an input through layers.
 pub struct Network {
     layers: Vec<Layer>,
 }
 
 impl Network {
+    /// Given `inputs`, computes the output of the neural network.
     pub fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
         self.layers
             .iter()
             .fold(inputs, |inputs, layer| layer.propagate(inputs))
     }
 
+    /// Initializes a new neural network with random layers.
     pub fn random(layers: &[LayerTopology]) -> Self {
         assert!(layers.len() > 1);
 
@@ -23,7 +26,6 @@ impl Network {
             })
             .collect();
 
-
         Self { layers }
     }
 } 
@@ -33,6 +35,7 @@ struct Layer {
 }
 
 impl Layer {
+    /// Propagates the output of the previous layer through the layer.
     fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
         self.neurons
             .iter()
@@ -40,6 +43,7 @@ impl Layer {
             .collect()
     }
 
+    /// Initializes layer of random neurons.
     pub fn random(input_neurons: usize, output_neurons: usize) -> Self {
         let neurons = (0..output_neurons)
             .map(|_| Neuron::random(&mut rand::thread_rng(), input_neurons))
@@ -55,6 +59,7 @@ struct Neuron {
 }
 
 impl Neuron {
+    /// Computes the activation of the neuron, given the inputs.
     fn propagate(&self, inputs: &[f32]) -> f32 {
         assert_eq!(inputs.len(), self.weights.len());
 
@@ -67,6 +72,7 @@ impl Neuron {
         (output + self.bias).max(0.0)
     }
 
+    /// Initializes neuron with randoms weights and a random bias.
     pub fn random(rng: &mut dyn rand::RngCore, output_size: usize) -> Self {
         let bias = rng.gen_range(-1.0..=1.0);
 
@@ -78,6 +84,7 @@ impl Neuron {
     }
 } 
 
+/// A structure containing the number of neurons of a layer.
 pub struct LayerTopology {
     pub neurons: usize
 }

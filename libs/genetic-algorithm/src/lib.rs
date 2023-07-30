@@ -3,6 +3,7 @@ use std::ops::Index;
 
 pub mod test;
 
+/// A wrapping structure of the Genetic Algorithm, holding the evolution methods.
 pub struct GeneticAlgorithm<S> {
     selection_method: S,
     crossover_method: Box<dyn CrossoverMethod>,
@@ -25,6 +26,7 @@ where
         }
     }
 
+    /// Given a population, selects, crosses over, and mutates each individual.
     pub fn evolve<I>(&self, rng: &mut dyn RngCore, population: &[I]) -> Vec<I> 
     where 
         I: Individual,
@@ -59,13 +61,17 @@ where
     }
 }
 
+/// An abstract individual, which holds chromosomes.
+/// These chromosomes can be computed into a fitness function.
 pub trait Individual {
     fn fitness(&self) -> f32;
     fn chromosome(&self) -> &Chromosome;
     fn create(chromosome: Chromosome) -> Self;
 }
 
+/// A method that can select a parent in a given population.
 pub trait SelectionMethod {
+    /// Given a population, select an individual.
     fn select<'a, I>(
         &self, 
         rng: &mut dyn RngCore,
@@ -74,6 +80,8 @@ pub trait SelectionMethod {
         I: Individual;
 }
 
+/// A simple selection method, that selects parents randomly.
+/// The probability to be selected depends on the fitness.
 pub struct RouletteWheelSelection;
 
 impl RouletteWheelSelection {
@@ -98,6 +106,7 @@ impl SelectionMethod for RouletteWheelSelection {
 }
 
 
+/// A wrapper for genes, a vector of `f32`.
 #[derive(Clone, Debug)]
 pub struct  Chromosome {
     genes: Vec<f32>
@@ -142,7 +151,9 @@ impl IntoIterator for Chromosome {
     }
 }
 
+/// A method that can "fuse" two given parents into one child.
 pub trait CrossoverMethod {
+    /// Given two chromosomes of parents, crosses them over to create the chromosomes of a child.
     fn crossover(
         &self,
         rng: &mut dyn RngCore,
@@ -151,6 +162,7 @@ pub trait CrossoverMethod {
     ) -> Chromosome;
 }
 
+/// A simple method of crossover, which selects randomly and uniformely each gene from one of the parents.
 #[derive(Clone, Debug)]
 pub struct UniformCrossover;
 
@@ -178,10 +190,16 @@ impl CrossoverMethod for UniformCrossover {
     }
 }
 
+/// A method to add random mutations to an existing genome.
 pub trait MutationMethod {
+    /// Given a child's chromosome, modify one or more genes from it.
     fn mutate(&self, rng: &mut dyn RngCore, child: &mut Chromosome);
 }
 
+/// A simple mutation method, that changes each genes with a given chance,
+/// and with a given magnitude.
+/// For `chance = 0.5` and `coeff = 2.0`, each gene will have a fifty-fifty
+/// chance to be added or substracted 2.
 #[derive(Clone, Debug)]
 pub struct GaussianMutation {
     /// Probability of changing a gene (between `0.0` and `1.0`)
