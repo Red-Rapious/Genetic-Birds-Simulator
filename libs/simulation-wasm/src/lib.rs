@@ -21,7 +21,7 @@ impl Simulation {
 
     pub fn world(&self) -> JsValue {
         let world = World::from(self.sim.world());
-        
+
         #[allow(deprecated)]
         JsValue::from_serde(&world).unwrap()
     }
@@ -43,7 +43,8 @@ impl From<&sim::Bird> for Bird {
     fn from(bird: &sim::Bird) -> Self {
         Self {
             x: bird.position().x,
-            y: bird.position().y
+            y: bird.position().y,
+            rotation: bird.rotation().angle()
         }
     }
 }
@@ -56,5 +57,6 @@ pub struct World {
 #[derive(Clone, Debug, Serialize)]
 pub struct Bird {
     pub x: f32,
-    pub y: f32
+    pub y: f32,
+    pub rotation: f32
 }
