@@ -1,3 +1,6 @@
 import * as sim from "lib-simulation-wasm";
 
-alert("Hello " + sim.world() + "!");
+const simulation = new sim.Simulation();
+const world = simulation.world();
+
+console.log(world);
