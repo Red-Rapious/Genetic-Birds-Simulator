@@ -372,7 +372,7 @@ mod tests {
                 .sum();
 
             for _ in 0..10 {
-                population = genetic_algorithm.evolve(&mut rng, &population);
+                (population, _) = genetic_algorithm.evolve(&mut rng, &population);
             }
 
             let expected_population = vec![

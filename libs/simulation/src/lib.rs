@@ -57,11 +57,29 @@ impl Simulation {
     }
 
     /// Computes the next step of the simulation.
-    /// Handles movement of the birds and collisions with food.
-    pub fn step(&mut self, rng: &mut dyn RngCore) {
+    /// Handles movement of the birds, collisions with food, and brains changes.
+    /// Returns `Some(stats)` if `evolve` was called, `None` either.
+    pub fn step(&mut self, rng: &mut dyn RngCore) -> Option<ga::Statistics> {
+        self.age += 1;
+
         self.process_brains();
         self.process_movement();
         self.process_collisions(rng);
+
+        if self.age > GENERATION_LENGTH {
+            Some(self.evolve(rng))
+        } else {
+            None
+        }
+    }
+
+    /// Loops until the end of the current generation
+    pub fn train(&mut self, rng: &mut dyn RngCore) -> ga::Statistics {
+        loop {
+            if let Some(summary) = self.step(rng) {
+                return summary;
+            }
+        }
     }
 
     /// Adjusts the speed and rotation of each bird according to the brain
@@ -119,7 +137,7 @@ impl Simulation {
         }
     }
 
-    fn evolve(&mut self, rng: &mut dyn RngCore) {
+    fn evolve(&mut self, rng: &mut dyn RngCore) -> ga::Statistics {
         self.age = 0;
 
         // Prepare birds
@@ -131,7 +149,7 @@ impl Simulation {
             .collect();
 
         // Evolve birds
-        let evolved_population = self.genetic_algorithm.evolve(
+        let (evolved_population, stats) = self.genetic_algorithm.evolve(
             rng,
             &current_population
         );
@@ -146,5 +164,7 @@ impl Simulation {
         for food in &mut self.world.foods {
             food.position = rng.gen();
         }
+
+        stats
     }
 }

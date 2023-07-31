@@ -27,13 +27,13 @@ where
     }
 
     /// Given a population, selects, crosses over, and mutates each individual.
-    pub fn evolve<I>(&self, rng: &mut dyn RngCore, population: &[I]) -> Vec<I> 
+    pub fn evolve<I>(&self, rng: &mut dyn RngCore, population: &[I]) -> (Vec<I>, Statistics)
     where 
         I: Individual,
     {
         assert!(!population.is_empty());
 
-        (0..population.len())
+        let new_population: Vec<I> = (0..population.len())
             .map(|_| {
                 // Selection of two random parents
                 let parent_a = self
@@ -57,7 +57,11 @@ where
                 // Convert the Chromosome back to an Individual
                 I::create(child)
             })
-            .collect()
+            .collect();
+
+        let stats = Statistics::new(&new_population);
+
+        (new_population, stats)
     }
 }
 
@@ -226,5 +230,51 @@ impl MutationMethod for GaussianMutation {
                 *gene += sign * self.coeff * rng.gen::<f32>();
             }
         }
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct Statistics {
+    min_fitness: f32,
+    max_fitness: f32,
+    average_fitness: f32
+}
+
+impl Statistics {
+    fn new<I>(population: &[I]) -> Self 
+    where
+        I: Individual
+    {
+        assert!(!population.is_empty());
+
+        let mut min_fitness = population[0].fitness();
+        let mut max_fitness = population[0].fitness();
+        let mut sum_fitness = 0.0;
+
+        for individual in population {
+            let fitness = individual.fitness();
+
+            min_fitness = min_fitness.min(fitness);
+            max_fitness = max_fitness.max(fitness);
+            sum_fitness += fitness;
+        }
+
+        Self {
+            min_fitness,
+            max_fitness,
+            average_fitness: sum_fitness / (population.len() as f32)
+        }
+    }
+
+    pub fn min_fitness(&self) -> f32 {
+        self.min_fitness
+    }
+
+    pub fn max_fitness(&self) -> f32 {
+        self.max_fitness
+    }
+
+    pub fn avg_fitness(&self) -> f32 {
+        self.average_fitness
     }
 }

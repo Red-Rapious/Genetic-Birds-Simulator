@@ -1,9 +1,15 @@
 import * as sim from "lib-simulation-wasm";
 
+const STEPS_PER_FRAME = 10;
+
 const simulation = new sim.Simulation();
-const world = simulation.world();
 
 const viewport = document.getElementById("viewport");
+
+// Maps the "Next Generation" button to `simulation.train()`
+document.getElementById("train").onclick = function() {
+    console.log(simulation.train());
+}
 
 // Adapat the viewport scale to avoid pixelized images.
 const viewportWidth = viewport.width;
@@ -60,8 +66,12 @@ CanvasRenderingContext2D.prototype.drawCircle = function(x, y, radius) {
 function redraw() {
     ctxt.clearRect(0, 0, viewportWidth, viewportHeight);
 
-    simulation.step();
     const world = simulation.world();
+
+    // Increases simulation speed
+    for (let i = 0; i < STEPS_PER_FRAME; i += 1) {
+        simulation.step();
+    }
 
     for (const food of world.foods) {
         ctxt.drawCircle(

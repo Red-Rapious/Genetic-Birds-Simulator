@@ -21,7 +21,7 @@ impl Simulation {
         Self { rng, sim }
     }
 
-    /// Getter for world
+    /// Getter for `world`
     pub fn world(&self) -> JsValue {
         let world = World::from(self.sim.world());
 
@@ -32,6 +32,18 @@ impl Simulation {
     /// Steps the back-end simulation
     pub fn step(&mut self) {
         self.sim.step(&mut self.rng);
+    }
+
+    /// Fast-forwards to the next generation
+    pub fn train(&mut self) -> String {
+        let stats = self.sim.train(&mut self.rng);
+
+        format!(
+            "min={:.2}, max={:.2}, avg={:.2}",
+            stats.min_fitness(),
+            stats.max_fitness(),
+            stats.avg_fitness()
+        )
     }
 }
 
