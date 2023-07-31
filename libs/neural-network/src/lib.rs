@@ -3,6 +3,7 @@ use rand::Rng;
 pub mod test;
 
 /// The structure of a neural network, capable of propagating an input through layers.
+#[derive(Debug)]
 pub struct Network {
     layers: Vec<Layer>,
 }
@@ -30,6 +31,7 @@ impl Network {
     }
 } 
 
+#[derive(Debug)]
 struct Layer {
     neurons: Vec<Neuron>,
 }
@@ -53,6 +55,7 @@ impl Layer {
     }
 }
 
+#[derive(Debug)]
 struct Neuron {
     bias: f32,
     weights: Vec<f32>,
