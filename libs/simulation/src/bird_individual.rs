@@ -1,5 +1,6 @@
 use crate::*;
 
+/// An implementation of Individual in the case of a bird.
 pub struct BirdIndividual {
     fitness: f32,
     chromosome: ga::Chromosome
@@ -23,6 +24,7 @@ impl ga::Individual for BirdIndividual {
 }
 
 impl BirdIndividual {
+    /// Convert a Bird to a BirdIndividual
     pub fn from_bird(bird: &Bird) -> Self {
         Self {
             fitness: bird.satiation as f32,
@@ -30,6 +32,7 @@ impl BirdIndividual {
         }
     }
 
+    /// Convert a BirdIndividual to a Bird
     pub fn into_bird(self, rng: &mut dyn RngCore) -> Bird {
         Bird::from_chromosome(self.chromosome, rng)
     }

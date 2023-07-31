@@ -13,14 +13,21 @@ mod eye;
 mod food;
 mod world;
 
-const SPEED_MIN: f32 = 0.001; // minimum speed of a bird, avoids getting stuck
-const SPEED_MAX: f32 = 0.005; // maximum speed of a bird, avoids unrealistic behaviors
-const SPEED_ACCEL: f32 = 0.2; // how much the brain can affect the speed in one step
-const ROTATION_ACCEL: f32 = FRAC_PI_2; // how much the brain can change the rotation in one step
+/// Minimum speed of a bird, avoids getting stuck
+const SPEED_MIN: f32 = 0.001; 
+/// Maximum speed of a bird, avoids unrealistic behaviors
+const SPEED_MAX: f32 = 0.005; 
+/// How much the brain can affect the speed in one step
+const SPEED_ACCEL: f32 = 0.2; 
+// How much the brain can change the rotation in one step
+const ROTATION_ACCEL: f32 = FRAC_PI_2; 
 
-const GENERATION_LENGTH: usize = 2500; // how many steps each bird gets to live
+/// How many steps each bird gets to live
+const GENERATION_LENGTH: usize = 2500; 
 
+/// Gaussian Mutation chance of mutation
 const MUTATION_CHANCE: f32 = 0.01;
+/// Gaussian Mutation magnitude of mutation
 const MUTATION_COEFF: f32 = 0.03;
 
 /// A back-end structure holding the world and handling movement, collisions...
@@ -57,20 +64,25 @@ impl Simulation {
         self.process_collisions(rng);
     }
 
+    /// Adjusts the speed and rotation of each bird according to the brain
     fn process_brains(&mut self) {
         for bird in &mut self.world.birds {
+            // What the bird sees
             let vision = bird.eye.process_vision(
                 bird.position,
                 bird.rotation,
                 &self.world.foods
             );
 
+            // Response of the brain
             let response = bird.brain.neural_network.propagate(vision);
             let (speed, rotation) = (response[0], response[1]);
 
+            // Clamp the response to make sure that the brain doesn't change speed and rotation too much
             let speed = speed.clamp(-SPEED_ACCEL, SPEED_ACCEL);
             let rotation = rotation.clamp(-ROTATION_ACCEL, ROTATION_ACCEL);
 
+            // Adjusts speed and rotation
             bird.speed = (bird.speed + speed).clamp(SPEED_MIN, SPEED_MAX);
             bird.rotation = na::Rotation2::new(
                 bird.rotation.angle() + rotation

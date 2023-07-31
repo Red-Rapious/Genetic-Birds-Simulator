@@ -36,6 +36,7 @@ impl Network {
         Self { layers }
     }
 
+    /// Returns a Vector containing the weights of the network for exportation.
     pub fn weights(&self) -> Vec<f32> {
         let mut weights = Vec::new();
 
@@ -52,6 +53,7 @@ impl Network {
         weights
     }
 
+    /// Initializes a network from given weights
     pub fn from_weights(
         layers: &[LayerTopology],
         weights: impl IntoIterator<Item = f32>
@@ -85,6 +87,7 @@ pub struct Layer {
 }
 
 impl Layer {
+    /// Initializes a layer of deterministic neurons.
     pub fn new(neurons: Vec<Neuron>) -> Self {
         Self { neurons }
     }
@@ -106,6 +109,7 @@ impl Layer {
         Self { neurons }
     }
 
+    /// Initializes a layer from given weights.
     pub fn from_weights(
         input_size: usize,
         output_size: usize,
@@ -126,6 +130,7 @@ pub struct Neuron {
 }
 
 impl Neuron {
+    /// Initializes a deterministic neuron.
     fn new(bias: f32, weights: Vec<f32>) -> Self {
         Self { bias, weights }
     }

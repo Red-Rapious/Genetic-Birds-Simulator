@@ -9,6 +9,8 @@ const FOV_ANGLE: f32 = PI + FRAC_PI_4;
 /// This directly affects the number of neurons in the input layer.
 const CELLS: usize = 9;
 
+/// A structure containing the vision cells and FOV parameters, 
+/// and capable of processing vision
 #[derive(Debug)]
 pub struct Eye {
     fov_range: f32,
@@ -29,6 +31,11 @@ impl Eye {
         self.cells
     }
 
+    /// Given the bird's position and rotation, and the available food,
+    /// returns the activations of each cell.
+    /// Each cell's activation corresponds to the sum of the "energy"
+    /// of food in the correct FOV. 
+    /// The "energy" depends on the distance of the food to the bird.
     pub fn process_vision(
         &self, 
         position: na::Point2<f32>,
@@ -61,7 +68,7 @@ impl Eye {
             let angle = angle + self.fov_angle / 2.0; // angle \in [0, FOV_ANGLE]
             let cell = angle / self.fov_angle; // cell \in [0, 1]
             let cell = cell * (self.cells as f32); // cell \in [0, CELLS]
-            let cell = (cell as usize).min(cells.len() - 1); // if the angle was exactly FOV_ANGLE, round up to the closer acceptable value
+            let cell = (cell as usize).min(cells.len() - 1); // if the angle was exactly FOV_ANGLE, round up to the closest acceptable value
 
             // Update the magnitude of the cell activation
             let activation_energy = (self.fov_range - dist) / self.fov_range; // the closer the food, the higher the energy

@@ -13,6 +13,7 @@ pub struct Bird {
 }
 
 impl Bird {
+    /// Initializes a new bird at a random position, with given brain and eyes.
     pub fn new(eye: Eye, brain: Brain, rng: &mut dyn RngCore) -> Self {
         Self {
             position: rng.gen(),
@@ -24,7 +25,7 @@ impl Bird {
         }
     }
 
-    /// Initializes a bird at a random position with a base speed
+    /// Initializes a new bird at a random position, with a default eye and a random brain.
     pub fn random(rng: &mut dyn RngCore) -> Self {
         let eye = Eye::default();
         let brain = Brain::random(&eye);
@@ -49,10 +50,12 @@ impl Bird {
         self.rotation
     }
 
+    /// Convert the bird to its chromosome
     pub(crate) fn as_chromosome(&self) -> ga::Chromosome {
         self.brain.as_chromosome()
     }
 
+    /// Initializes a bird from given chromosome
     pub(crate) fn from_chromosome(
         chromosome: ga::Chromosome,
         rng: &mut dyn RngCore
