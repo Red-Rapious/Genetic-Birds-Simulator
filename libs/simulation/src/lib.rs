@@ -1,29 +1,46 @@
-pub use self::{bird::*, food::*, world::*, eye::*};
-use lib_neural_network as nn;
 use nalgebra as na;
 use rand::{Rng, RngCore};
 use std::f32::consts::FRAC_PI_2;
 
+pub use self::{bird::*, food::*, world::*, eye::*, bird_individual::*, brain:: *};
+use lib_neural_network as nn;
+use lib_genetic_algorithm as ga;
+
 mod bird;
+mod bird_individual;
+mod brain;
+mod eye;
 mod food;
 mod world;
-mod eye;
 
 const SPEED_MIN: f32 = 0.001; // minimum speed of a bird, avoids getting stuck
 const SPEED_MAX: f32 = 0.005; // maximum speed of a bird, avoids unrealistic behaviors
 const SPEED_ACCEL: f32 = 0.2; // how much the brain can affect the speed in one step
 const ROTATION_ACCEL: f32 = FRAC_PI_2; // how much the brain can change the rotation in one step
 
+const GENERATION_LENGTH: usize = 2500; // how many steps each bird gets to live
+
+const MUTATION_CHANCE: f32 = 0.01;
+const MUTATION_COEFF: f32 = 0.03;
+
 /// A back-end structure holding the world and handling movement, collisions...
 pub struct Simulation {
-    world: World
+    world: World,
+    genetic_algorithm: ga::GeneticAlgorithm<ga::RouletteWheelSelection>,
+    age: usize
 }
 
 impl Simulation {
     /// Initializes a random simulation with a random world
     pub fn random(rng: &mut dyn RngCore) -> Self {
         Self {
-            world: World::random(rng)
+            world: World::random(rng),
+            genetic_algorithm: ga::GeneticAlgorithm::new(
+                ga::RouletteWheelSelection::new(),
+                ga::UniformCrossover::new(),
+                ga::GaussianMutation::new(MUTATION_CHANCE, MUTATION_COEFF)
+            ),
+            age: 0
         }
     }
 
@@ -48,7 +65,7 @@ impl Simulation {
                 &self.world.foods
             );
 
-            let response = bird.brain.propagate(vision);
+            let response = bird.brain.neural_network.propagate(vision);
             let (speed, rotation) = (response[0], response[1]);
 
             let speed = speed.clamp(-SPEED_ACCEL, SPEED_ACCEL);
@@ -83,9 +100,39 @@ impl Simulation {
                 );
 
                 if distance <= 0.01 {
+                    bird.satiation += 1;
                     food.position = rng.gen();
                 }
             }
+        }
+    }
+
+    fn evolve(&mut self, rng: &mut dyn RngCore) {
+        self.age = 0;
+
+        // Prepare birds
+        let current_population: Vec<_> = self
+            .world
+            .birds
+            .iter()
+            .map(|bird| BirdIndividual::from_bird(bird))
+            .collect();
+
+        // Evolve birds
+        let evolved_population = self.genetic_algorithm.evolve(
+            rng,
+            &current_population
+        );
+
+        // Add birds to the world
+        self.world.birds = evolved_population
+            .into_iter()
+            .map(|individual| individual.into_bird(rng))
+            .collect();
+
+        // Changes the place of the food (for UI purposes to spot a new generation)
+        for food in &mut self.world.foods {
+            food.position = rng.gen();
         }
     }
 }
