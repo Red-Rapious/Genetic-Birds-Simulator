@@ -4,22 +4,28 @@
     <meta charset="utf-8">
     <title>Genetic Birds Simulator</title>
   </head>
-  <style>
-    body {
-      background: #1f2639;
-    }
-
-    #train {
-      position: absolute;
-      top: 0;
-      margin: 15px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
   <body>
-    <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
+    
+    <h1>
+      <a href="https://github.com/Red-Rapious/Genetic-Birds-Simulator">
+        [Genetic-Birds-Simulator]
+      </a>
+    </h1>
+    
+    <div id="buttons">
+      <button id="train">Next Generation</button>
 
-    <canvas id="viewport" width="800" height="800"></canvas>
-    <buttons id="train">Next Generation</buttons>
+      <input type="checkbox" id="pause">
+      <label for="pause">Pause Simulation</label>
+
+      <button id="restart">Restart Simulation</button>
+    </div>
+    <noscript>This page contains WebAssembly and Javascript content, please enable Javascript in your browser.</noscript>
+    
+    <div id="viewport-container">
+      <canvas id="viewport" width="750" height="750"></canvas>
+    </div>
 
     <script src="./bootstrap.js"></script>
   </body>

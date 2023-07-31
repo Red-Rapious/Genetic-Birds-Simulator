@@ -2,9 +2,25 @@ import * as sim from "lib-simulation-wasm";
 
 const STEPS_PER_FRAME = 1;
 
-const simulation = new sim.Simulation();
+var simulation = new sim.Simulation();
 
 const viewport = document.getElementById("viewport");
+
+var simulationPaused = false;
+const pauseCheckbox = document.getElementById("pause");
+pauseCheckbox.checked = simulationPaused;
+
+pauseCheckbox.onclick = function() {
+    simulationPaused = pauseCheckbox.checked;
+    if (!simulationPaused) {
+        redraw();
+    }
+}
+
+const restartBtn = document.getElementById("restart");
+restartBtn.onclick = function() {
+    simulation = new sim.Simulation();
+}
 
 // Maps the "Next Generation" button to `simulation.train()`
 document.getElementById("train").onclick = function() {
@@ -89,7 +105,9 @@ function redraw() {
             bird.rotation);
     }
 
-    requestAnimationFrame(redraw);
+    if (!simulationPaused) {
+        requestAnimationFrame(redraw);
+    }
 }
 
 redraw();
