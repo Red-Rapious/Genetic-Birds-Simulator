@@ -3,6 +3,7 @@ use lib_simulation as sim;
 use rand::prelude::*;
 use serde::Serialize;
 
+/// WebAssembly-aware wrapper for the simulation
 #[wasm_bindgen]
 pub struct Simulation {
     rng: ThreadRng,
@@ -11,6 +12,7 @@ pub struct Simulation {
 
 #[wasm_bindgen]
 impl Simulation {
+    /// Initializes a new random simulation
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
         let mut rng = thread_rng();
@@ -19,6 +21,7 @@ impl Simulation {
         Self { rng, sim }
     }
 
+    /// Getter for world
     pub fn world(&self) -> JsValue {
         let world = World::from(self.sim.world());
 
@@ -26,11 +29,20 @@ impl Simulation {
         JsValue::from_serde(&world).unwrap()
     }
 
+    /// Steps the back-end simulation
     pub fn step(&mut self) {
         self.sim.step(&mut self.rng);
     }
 }
 
+/// Front-end World
+#[derive(Clone, Debug, Serialize)]
+pub struct World {
+    pub birds: Vec<Bird>,
+    pub foods: Vec<Food>
+}
+
+/// Convert back-end World to front-end World
 impl From<&sim::World> for World {
     fn from(world: &sim::World) -> Self {
         let birds = world
@@ -49,6 +61,15 @@ impl From<&sim::World> for World {
     }
 }
 
+/// Front-end Bird
+#[derive(Clone, Debug, Serialize)]
+pub struct Bird {
+    pub x: f32,
+    pub y: f32,
+    pub rotation: f32
+}
+
+/// Convert back-end Bird to front-end Bird
 impl From<&sim::Bird> for Bird {
     fn from(bird: &sim::Bird) -> Self {
         Self {
@@ -59,6 +80,14 @@ impl From<&sim::Bird> for Bird {
     }
 }
 
+/// Front-end Food
+#[derive(Clone, Debug, Serialize)]
+pub struct Food {
+    pub x: f32,
+    pub y: f32
+}
+
+/// Convert back-end Food to front-end Food
 impl From<&sim::Food> for Food {
     fn from(food: &sim::Food) -> Self {
         Self {
@@ -66,23 +95,4 @@ impl From<&sim::Food> for Food {
             y: food.position().y
         }
     }
-}
-
-#[derive(Clone, Debug, Serialize)]
-pub struct World {
-    pub birds: Vec<Bird>,
-    pub foods: Vec<Food>
-}
-
-#[derive(Clone, Debug, Serialize)]
-pub struct Bird {
-    pub x: f32,
-    pub y: f32,
-    pub rotation: f32
-}
-
-#[derive(Clone, Debug, Serialize)]
-pub struct Food {
-    pub x: f32,
-    pub y: f32
 }

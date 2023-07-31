@@ -5,6 +5,7 @@ const world = simulation.world();
 
 const viewport = document.getElementById("viewport");
 
+// Adapat the viewport scale to avoid pixelized images.
 const viewportWidth = viewport.width;
 const viewportHeight = viewport.height;
 
@@ -20,6 +21,7 @@ viewport.style.height = viewportHeight + 'px';
 const ctxt = viewport.getContext('2d');
 ctxt.scale(viewportScale, viewportScale);
 
+// Draws a simple white triangle used for birds
 CanvasRenderingContext2D.prototype.drawTriangle = function (x, y, size, rotation) {
     this.beginPath();
 
@@ -44,6 +46,7 @@ CanvasRenderingContext2D.prototype.drawTriangle = function (x, y, size, rotation
     this.fill();
 }
 
+/// Draws a simple green circle used for food
 CanvasRenderingContext2D.prototype.drawCircle = function(x, y, radius) {
     this.beginPath();
 
@@ -53,7 +56,7 @@ CanvasRenderingContext2D.prototype.drawCircle = function(x, y, radius) {
     this.fill();
 }
 
-
+// Draws birds and foods on the viewport
 function redraw() {
     ctxt.clearRect(0, 0, viewportWidth, viewportHeight);
 
