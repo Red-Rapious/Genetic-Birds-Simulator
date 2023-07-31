@@ -27,6 +27,8 @@ document.getElementById("train").onclick = function() {
     console.log(simulation.train());
 }
 
+const generationLabel = document.getElementById("generation");
+
 // Adapat the viewport scale to avoid pixelized images.
 const viewportWidth = viewport.width;
 const viewportHeight = viewport.height;
@@ -83,10 +85,12 @@ function redraw() {
     ctxt.clearRect(0, 0, viewportWidth, viewportHeight);
 
     const world = simulation.world();
+    var gen = 0;
 
     // Increases simulation speed
     for (let i = 0; i < STEPS_PER_FRAME; i += 1) {
-        simulation.step();
+        gen = simulation.step();
+        console.log(gen);
     }
 
     for (const food of world.foods) {
@@ -104,6 +108,8 @@ function redraw() {
             0.01 * viewportWidth,
             bird.rotation);
     }
+
+    generationLabel.innerHTML = "Generation: " + gen;
 
     if (!simulationPaused) {
         requestAnimationFrame(redraw);

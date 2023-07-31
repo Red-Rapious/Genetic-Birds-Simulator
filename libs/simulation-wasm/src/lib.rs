@@ -7,7 +7,8 @@ use serde::Serialize;
 #[wasm_bindgen]
 pub struct Simulation {
     rng: ThreadRng,
-    sim: sim::Simulation
+    sim: sim::Simulation,
+    generation: usize
 }
 
 #[wasm_bindgen]
@@ -18,7 +19,7 @@ impl Simulation {
         let mut rng = thread_rng();
         let sim = sim::Simulation::random(&mut rng);
 
-        Self { rng, sim }
+        Self { rng, sim, generation: 0 }
     }
 
     /// Getter for `world`
@@ -29,9 +30,14 @@ impl Simulation {
         JsValue::from_serde(&world).unwrap()
     }
 
-    /// Steps the back-end simulation
-    pub fn step(&mut self) {
-        self.sim.step(&mut self.rng);
+    /// Steps the back-end simulation.
+    /// Returns true if the population evolved.
+    pub fn step(&mut self) -> usize {
+        // If it just evolved, returns true
+        if let Some(_) = self.sim.step(&mut self.rng) {
+            self.generation += 1;
+        } 
+        self.generation
     }
 
     /// Fast-forwards to the next generation

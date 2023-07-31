@@ -30,7 +30,7 @@ h1 a:hover {
     text-decoration: underline;
 }
 
-#buttons {
+#buttons, #infos {
     width: 100%;
     margin-bottom: 20px;
     text-align: center;
@@ -41,12 +41,12 @@ h1 a:hover {
     margin-left: 30px;
 }
 
-#train, label, #restart {
+#train, label, #restart, #generation {
     font-size: medium;
     font-weight: bold;
 }
 
-label {
+label, #generation {
     color: white;
 }
 
