@@ -25,6 +25,10 @@ impl Simulation {
         #[allow(deprecated)]
         JsValue::from_serde(&world).unwrap()
     }
+
+    pub fn step(&mut self) {
+        self.sim.step();
+    }
 }
 
 impl From<&sim::World> for World {
@@ -35,7 +39,13 @@ impl From<&sim::World> for World {
             .map(Bird::from)
             .collect();
 
-        Self { birds }
+        let foods = world
+            .foods()
+            .iter()
+            .map(Food::from)
+            .collect();
+
+        Self { birds, foods }
     }
 }
 
@@ -49,9 +59,19 @@ impl From<&sim::Bird> for Bird {
     }
 }
 
+impl From<&sim::Food> for Food {
+    fn from(food: &sim::Food) -> Self {
+        Self {
+            x: food.position().x,
+            y: food.position().y
+        }
+    }
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct World {
-    pub birds: Vec<Bird>
+    pub birds: Vec<Bird>,
+    pub foods: Vec<Food>
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -59,4 +79,10 @@ pub struct Bird {
     pub x: f32,
     pub y: f32,
     pub rotation: f32
+}
+
+#[derive(Clone, Debug, Serialize)]
+pub struct Food {
+    pub x: f32,
+    pub y: f32
 }

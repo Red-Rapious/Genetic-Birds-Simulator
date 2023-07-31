@@ -15,6 +15,16 @@ impl Simulation {
     pub fn world(&self) -> &World {
         &self.world
     }
+
+    pub fn step(&mut self) {
+        for bird in &mut self.world.birds {
+            // Rotation relative to the y axis
+            bird.position += bird.rotation * na::Vector2::new(0.0, bird.speed);
+        
+            bird.position.x = na::wrap(bird.position.x, 0.0, 1.0);
+            bird.position.y = na::wrap(bird.position.y, 0.0, 1.0);
+        }
+    }
 }
 
 #[derive(Debug)]

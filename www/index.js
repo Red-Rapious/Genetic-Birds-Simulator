@@ -40,13 +40,43 @@ CanvasRenderingContext2D.prototype.drawTriangle = function (x, y, size, rotation
         y + Math.cos(-rotation) * size * 1.5,
     );
 
-    this.stroke();
+    this.fillStyle = 'rgb(255, 255, 255)'; // white
+    this.fill();
 }
 
-for (const bird of simulation.world().birds) {
-    ctxt.drawTriangle(
-        bird.x * viewportWidth,
-        bird.y * viewportHeight, 
-        0.01 * viewportWidth,
-        bird.rotation);
+CanvasRenderingContext2D.prototype.drawCircle = function(x, y, radius) {
+    this.beginPath();
+
+    this.arc(x, y, radius, 0, 2.0 * Math.PI);
+
+    this.fillStyle = 'rgb(0, 255, 128)'; // green-ish
+    this.fill();
 }
+
+
+function redraw() {
+    ctxt.clearRect(0, 0, viewportWidth, viewportHeight);
+
+    simulation.step();
+    const world = simulation.world();
+
+    for (const food of world.foods) {
+        ctxt.drawCircle(
+            food.x * viewportWidth,
+            food.y * viewportHeight,
+            (0.01 / 2.0) * viewportWidth
+        );
+    }
+
+    for (const bird of world.birds) {
+        ctxt.drawTriangle(
+            bird.x * viewportWidth,
+            bird.y * viewportHeight, 
+            0.01 * viewportWidth,
+            bird.rotation);
+    }
+
+    requestAnimationFrame(redraw);
+}
+
+redraw();
