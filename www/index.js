@@ -1,6 +1,6 @@
 import * as sim from "lib-simulation-wasm";
 
-const STEPS_PER_FRAME = 10;
+const STEPS_PER_FRAME = 1;
 
 const simulation = new sim.Simulation();
 

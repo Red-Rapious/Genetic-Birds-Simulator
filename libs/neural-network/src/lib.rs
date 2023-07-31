@@ -131,7 +131,7 @@ pub struct Neuron {
 
 impl Neuron {
     /// Initializes a deterministic neuron from given bias and weights.
-    fn new(bias: f32, weights: Vec<f32>) -> Self {
+    pub fn new(bias: f32, weights: Vec<f32>) -> Self {
         Self { bias, weights }
     }
 
