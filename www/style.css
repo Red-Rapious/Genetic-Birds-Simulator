@@ -41,12 +41,12 @@ h1 a:hover {
     margin-left: 30px;
 }
 
-#train, label, #restart, #generation {
+#train, label, #restart, #generation, #min-fitness, #max-fitness, #average-fitness {
     font-size: medium;
     font-weight: bold;
 }
 
-label, #generation {
+label, #generation, #min-fitness, #max-fitness, #average-fitness {
     color: white;
 }
 
@@ -64,4 +64,18 @@ button {
 
 button:hover {
     background-color: rgb(240, 255, 241);
+}
+
+#infos {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#generation, #min-fitness, #max-fitness, #average-fitness {
+    margin-left: 25px;
+}
+
+#generation {
+    margin-right: 100px;
 }

@@ -59,7 +59,7 @@ where
             })
             .collect();
 
-        let stats = Statistics::new(&new_population);
+        let stats = Statistics::new(population);
 
         (new_population, stats)
     }
@@ -241,7 +241,7 @@ pub struct Statistics {
 }
 
 impl Statistics {
-    fn new<I>(population: &[I]) -> Self 
+    pub fn new<I>(population: &[I]) -> Self 
     where
         I: Individual
     {

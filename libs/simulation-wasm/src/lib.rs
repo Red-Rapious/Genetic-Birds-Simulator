@@ -2,13 +2,15 @@ use wasm_bindgen::prelude::*;
 use lib_simulation as sim;
 use rand::prelude::*;
 use serde::Serialize;
+use lib_genetic_algorithm as ga;
 
 /// WebAssembly-aware wrapper for the simulation
 #[wasm_bindgen]
 pub struct Simulation {
     rng: ThreadRng,
     sim: sim::Simulation,
-    generation: usize
+    generation: usize,
+    stats: ga::Statistics
 }
 
 #[wasm_bindgen]
@@ -19,7 +21,14 @@ impl Simulation {
         let mut rng = thread_rng();
         let sim = sim::Simulation::random(&mut rng);
 
-        Self { rng, sim, generation: 0 }
+        let birds = sim.world().birds();
+        let birds_individual: Vec<lib_simulation::BirdIndividual> = birds
+            .iter()
+            .map(|bird| lib_simulation::BirdIndividual::from_bird(bird))
+            .collect();
+        let stats = ga::Statistics::new(&birds_individual);
+
+        Self { rng, sim, generation: 0, stats }
     }
 
     /// Getter for `world`
@@ -34,22 +43,30 @@ impl Simulation {
     /// Returns true if the population evolved.
     pub fn step(&mut self) -> usize {
         // If it just evolved, returns true
-        if let Some(_) = self.sim.step(&mut self.rng) {
+        if let Some(stats) = self.sim.step(&mut self.rng) {
             self.generation += 1;
+            self.stats = stats;
         } 
         self.generation
     }
 
     /// Fast-forwards to the next generation
-    pub fn train(&mut self) -> String {
+    pub fn train(&mut self) {
         let stats = self.sim.train(&mut self.rng);
+        self.generation += 1; // TODO: change the generation system
+        self.stats = stats;
+    }
 
-        format!(
-            "min={:.2}, max={:.2}, avg={:.2}",
-            stats.min_fitness(),
-            stats.max_fitness(),
-            stats.avg_fitness()
-        )
+    pub fn min_fitness(&self) -> usize {
+        self.stats.min_fitness() as usize
+    }
+
+    pub fn max_fitness(&self) -> usize {
+        self.stats.max_fitness() as usize
+    }
+
+    pub fn avg_fitness(&self) -> usize {
+        self.stats.avg_fitness() as usize
     }
 }
 

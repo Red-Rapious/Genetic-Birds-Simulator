@@ -8,10 +8,7 @@ pub struct BirdIndividual {
 
 impl ga::Individual for BirdIndividual {
     fn create(chromosome: ga::Chromosome) -> Self {
-        Self {
-            fitness: 0.0,
-            chromosome
-        }
+        Self { fitness: 0.0, chromosome }
     }
 
     fn chromosome(&self) -> &ga::Chromosome {

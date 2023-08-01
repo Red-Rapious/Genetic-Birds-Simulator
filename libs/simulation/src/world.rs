@@ -8,13 +8,13 @@ pub struct World {
 }
 
 impl World {
-    /// Initializes a random world with 40 random birds and 50 random food.
-    pub fn random(rng: &mut dyn RngCore) -> Self {
-        let birds = (0..40)
+    /// Initializes a random world with 40 random birds and 60 random food.
+    pub fn random(nb_birds: usize, nb_foods: usize, rng: &mut dyn RngCore) -> Self {
+        let birds = (0..nb_birds)
             .map(|_| Bird::random(rng))
             .collect();
 
-        let foods = (0..60)
+        let foods = (0..nb_foods)
             .map(|_| Food::random(rng))
             .collect();
 

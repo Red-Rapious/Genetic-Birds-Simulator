@@ -24,10 +24,14 @@ restartBtn.onclick = function() {
 
 // Maps the "Next Generation" button to `simulation.train()`
 document.getElementById("train").onclick = function() {
-    console.log(simulation.train());
+    simulation.train();
 }
 
 const generationLabel = document.getElementById("generation");
+const minFitnessLabel = document.getElementById("min-fitness");
+const maxFitnessLabel = document.getElementById("max-fitness");
+const averageFitnessLabel = document.getElementById("average-fitness");
+
 
 // Adapat the viewport scale to avoid pixelized images.
 const viewportWidth = viewport.width;
@@ -46,7 +50,7 @@ const ctxt = viewport.getContext('2d');
 ctxt.scale(viewportScale, viewportScale);
 
 // Draws a simple white triangle used for birds
-CanvasRenderingContext2D.prototype.drawTriangle = function (x, y, size, rotation) {
+CanvasRenderingContext2D.prototype.drawTriangle = function (x, y, size, rotation, color) {
     this.beginPath();
 
     this.moveTo(
@@ -66,7 +70,7 @@ CanvasRenderingContext2D.prototype.drawTriangle = function (x, y, size, rotation
         y + Math.cos(-rotation) * size * 1.5,
     );
 
-    this.fillStyle = 'rgb(255, 255, 255)'; // white
+    this.fillStyle = color;
     this.fill();
 }
 
@@ -80,7 +84,6 @@ CanvasRenderingContext2D.prototype.drawCircle = function(x, y, radius) {
     this.fill();
 }
 
-// Draws birds and foods on the viewport
 function redraw() {
     ctxt.clearRect(0, 0, viewportWidth, viewportHeight);
 
@@ -90,9 +93,9 @@ function redraw() {
     // Increases simulation speed
     for (let i = 0; i < STEPS_PER_FRAME; i += 1) {
         gen = simulation.step();
-        console.log(gen);
     }
 
+    // Draws the food
     for (const food of world.foods) {
         ctxt.drawCircle(
             food.x * viewportWidth,
@@ -101,15 +104,31 @@ function redraw() {
         );
     }
 
-    for (const bird of world.birds) {
+    // Draws the birds
+    for (var i = 0; i < world.birds.length; i += 1) {
+        const bird = world.birds[i];
+
+        // The first bird is red
+        var color;
+        if (i == 0) {
+            color = 'rgb(255, 0, 0)';
+        } else {
+            color = 'rgb(255, 255, 255)';
+        }
         ctxt.drawTriangle(
             bird.x * viewportWidth,
             bird.y * viewportHeight, 
             0.01 * viewportWidth,
-            bird.rotation);
+            bird.rotation,
+            color);
     }
 
+    // Update the labels
     generationLabel.innerHTML = "Generation: " + gen;
+    minFitnessLabel.innerHTML = "Minimum Fitness: " + simulation.min_fitness();
+    maxFitnessLabel.innerHTML = "Maximum Fitness: " + simulation.max_fitness();
+    averageFitnessLabel.innerHTML = "Average Fitness: " + simulation.avg_fitness();
+
 
     if (!simulationPaused) {
         requestAnimationFrame(redraw);

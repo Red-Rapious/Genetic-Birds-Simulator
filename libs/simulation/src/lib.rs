@@ -30,6 +30,9 @@ const MUTATION_CHANCE: f32 = 0.01;
 /// Gaussian Mutation magnitude of mutation
 const MUTATION_COEFF: f32 = 0.03;
 
+const NB_BIRDS: usize = 40;
+const NB_FOODS: usize = 60;
+
 /// A back-end structure holding the world and handling movement, collisions...
 pub struct Simulation {
     world: World,
@@ -41,7 +44,7 @@ impl Simulation {
     /// Initializes a random simulation with a random world
     pub fn random(rng: &mut dyn RngCore) -> Self {
         Self {
-            world: World::random(rng),
+            world: World::random(NB_BIRDS, NB_FOODS, rng),
             genetic_algorithm: ga::GeneticAlgorithm::new(
                 ga::RouletteWheelSelection::new(),
                 ga::UniformCrossover::new(),
