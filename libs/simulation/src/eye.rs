@@ -3,7 +3,7 @@ use std::f32::consts::*;
 
 /// How far the eye can see
 const FOV_RANGE: f32 = 0.25;
-/// How wie the eye can see, in radiants
+/// How wide the eye can see, in radiants
 const FOV_ANGLE: f32 = PI + FRAC_PI_4;
 /// How much photoreceptors there are in one eye.
 /// This directly affects the number of neurons in the input layer.
