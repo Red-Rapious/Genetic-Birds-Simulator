@@ -6,6 +6,7 @@ var simulation = new sim.Simulation();
 
 const viewport = document.getElementById("viewport");
 
+// The `pause` checkbox pauses the simulation by stoping the main rendering function, that calls `step()`
 var simulationPaused = false;
 const pauseCheckbox = document.getElementById("pause");
 pauseCheckbox.checked = simulationPaused;
@@ -17,6 +18,7 @@ pauseCheckbox.onclick = function() {
     }
 }
 
+// The restart buttons creates a new `Simulation` object
 const restartBtn = document.getElementById("restart");
 restartBtn.onclick = function() {
     simulation = new sim.Simulation();

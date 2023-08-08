@@ -4,10 +4,10 @@ A simulation of birds using neural networks and a genetic algorithm.
 ![Simulation Screenshot](assets/simulation-screenshot.png)
 
 ## About
-The goal is to teach birds (triangles) how to catch food (circles) by using a learning mechanisms that simulates natural evolution.
+The goal is to teach birds (triangles) how to catch food (circles) by using learning mechanisms that simulate natural evolution.
 
 ### Motivation
-This project is a kind of sequel to [MLP-Digits-Recognition](), an implementation of a neural network from scratch. This time, I used [this great tutorial](https://pwy.io/posts/learning-to-fly-pt1/) as a starting point, to train the neural network with a genetic algorithm, instead of backpropagation.
+This project is a kind of sequel to [MLP-Digits-Recognition](https://github.com/Red-Rapious/MLP-Digits-Recognition), an implementation of a neural network from scratch. This time, I used [this great tutorial](https://pwy.io/posts/learning-to-fly-pt1/) as a starting point, to train the neural network with a genetic algorithm, instead of backpropagation.
 
 ### Technical description
 - The [`lib-neural-network`](libs/neural-network/src/lib.rs) library contains an implementation of a simple, non-optimized FFNN (Feed-Forward Neural Network).
@@ -27,6 +27,8 @@ The simulation can run in any browser. To try it yourself, you will need:
 - `rustc` and `cargo` installed, for the back-end code.
 - [`wasm-pack`](https://rustwasm.github.io/wasm-pack/installer/), to compile Rust code into WebAssembly
 - [`npm`](https://www.npmjs.com/get-npm) for the front-end simulation
+
+> __Note:__ some packages used seem to conflict with latest `npm` versions. If you encounter any issues, try to change `npm` version using `npm install npm@9.5.0 -g`, and to add the following node option: `export NODE_OPTIONS=--openssl-legacy-provider`.
 
 In the `Genetic-Birds-Simulator` root folder, you can make sure that everything is working by running:
 ```console
